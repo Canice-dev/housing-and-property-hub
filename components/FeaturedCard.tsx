@@ -9,7 +9,7 @@ export default function FeaturedCard({ property }: { property: Property }) {
   const router = useRouter();
   return (
     <TouchableOpacity
-      // onPress={() => router.push(`/(root)/property/${property.id}`)}
+      onPress={() => router.push(`/(root)/property/${property.id}`)}
       className="w-72 mr-4 rounded-3xl overflow-hidden bg-white"
       style={{
         shadowColor: "#000",
