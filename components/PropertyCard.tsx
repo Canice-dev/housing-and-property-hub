@@ -1,3 +1,4 @@
+import { useSavedProperty } from "@/hooks/useSavedProperty";
 import { formatPrice } from "@/lib/utils";
 import { Property } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,14 +9,17 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 export default function PropertyCard({
   property,
   onUnsave,
-  showSave = false,
+  showSave = false, // added true for the toggle to work
 }: {
   property: Property;
   onUnsave?: () => void;
   showSave?: boolean;
 }) {
   const router = useRouter();
-  const isSaved = true;
+  const { isSaved, saveLoading, toggleSave } = useSavedProperty(
+    property.id,
+    onUnsave,
+  );
 
   return (
     <TouchableOpacity
@@ -75,8 +79,8 @@ export default function PropertyCard({
 
       {/* {showSave && ( */}
       <TouchableOpacity
-        // onPress={toggleSave}
-        // disabled={saveLoading}
+        onPress={toggleSave}
+        disabled={saveLoading}
         className="w-10 items-center pt-3"
       >
         <Ionicons
