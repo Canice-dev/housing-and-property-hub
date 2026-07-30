@@ -10,7 +10,7 @@ export default function FeaturedCard({ property }: { property: Property }) {
   return (
     <TouchableOpacity
       onPress={() => router.push(`/(root)/property/${property.id}`)}
-      className="w-72 mr-4 rounded-3xl overflow-hidden bg-white"
+      className="w-60 mr-4 rounded-3xl overflow-hidden bg-white"
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
@@ -25,8 +25,8 @@ export default function FeaturedCard({ property }: { property: Property }) {
         className="w-full h-44"
         resizeMode="cover"
       />
-      <View className="absolute top-3 left-3 bg-white/90 px-3 py-1 rounded-full">
-        <Text className="text-xs font-semibold text-blue-600 capitalize">
+      <View className="absolute top-3 left-3 bg-[#e3e7e8] px-3 py-1 rounded-full">
+        <Text className="text-xs font-semibold text-[#3c3d3d] capitalize">
           {property.type}
         </Text>
       </View>
@@ -52,10 +52,10 @@ export default function FeaturedCard({ property }: { property: Property }) {
         </View>
 
         <View className="flex-row items-center justify-between">
-          <Text className="text-blue-600 font-bold text-base">
+          <Text className="text-xm text-gray-500 text-base">
             {formatPrice(property.initial_price)}
           </Text>
-          <Text className="text-blue-600 font-bold text-base">
+          <Text className="text-xm text-gray-500 text-base">
             {formatPrice(property.subsequent_price)}
           </Text>
         </View>

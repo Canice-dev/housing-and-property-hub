@@ -99,7 +99,7 @@ export default function HomeScreen() {
                 onPress={() =>
                   router.push("/(root)/(tabs)/search?openFilters=true")
                 }
-                className="w-8 h-8 bg-blue-600 rounded-xl items-center justify-center"
+                className="w-8 h-8 bg-[#dc0e63] rounded-xl items-center justify-center"
               >
                 <Ionicons name="options-outline" size={15} color="white" />
               </TouchableOpacity>

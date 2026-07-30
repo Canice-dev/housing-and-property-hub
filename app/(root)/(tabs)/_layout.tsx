@@ -8,7 +8,13 @@ import { Platform } from "react-native";
 function AndroidTabs() {
   const isAdmin = useUserStore((state) => state.isAdmin);
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#dc0e63",
+        tabBarInactiveTintColor: "gray",
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -42,9 +48,9 @@ function AndroidTabs() {
       <Tabs.Screen
         name="starred"
         options={{
-          title: "Saved",
+          title: "Wishlist",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="star" color={color} size={size} />
+            <Ionicons name="heart" color={color} size={size} />
           ),
         }}
       />

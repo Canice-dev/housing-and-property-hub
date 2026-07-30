@@ -145,7 +145,7 @@ export default function SignInScreen() {
 
         <TextInput
           className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4"
-          placeholder="Email address"
+          placeholder="Email"
           placeholderTextColor="#9CA3AF"
           value={email}
           onChangeText={setEmail}
@@ -175,7 +175,7 @@ export default function SignInScreen() {
         <TouchableOpacity
           onPress={onSignInPress}
           disabled={isLoading}
-          className="w-full bg-blue-600 py-4 rounded-xl items-center mb-4"
+          className="w-full bg-[#dc0e63] py-4 rounded-xl items-center mb-4"
         >
           {isLoading ? (
             <ActivityIndicator color="white" />
@@ -187,7 +187,7 @@ export default function SignInScreen() {
         <View className="flex-row justify-center">
           <Text className="text-gray-500">Don&apos;t have an account? </Text>
           <Link href="/sign-up">
-            <Text className="text-blue-600 font-semibold">Sign Up</Text>
+            <Text className="text-[#dc0e63] font-semibold">Sign Up</Text>
           </Link>
         </View>
       </View>

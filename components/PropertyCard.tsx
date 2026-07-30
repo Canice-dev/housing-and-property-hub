@@ -84,9 +84,9 @@ export default function PropertyCard({
         className="w-10 items-center pt-3"
       >
         <Ionicons
-          name={isSaved ? "star" : "star"}
+          name={isSaved ? "heart" : "heart"}
           size={18}
-          color={isSaved ? "#FFC107" : "#9CA3AF"}
+          color={isSaved ? "#FF3B30" : "#9CA3AF"}
         />
       </TouchableOpacity>
       {/* )} */}

@@ -160,9 +160,9 @@ export default function PropertyDetails() {
                 style={{ elevation: 3 }}
               >
                 <Ionicons
-                  name={isSaved ? "star" : "star"}
+                  name={isSaved ? "heart" : "heart"}
                   size={20}
-                  color={isSaved ? "#F4B400" : "#111827"}
+                  color={isSaved ? "#FF3B30" : "#111827"}
                 />
               </TouchableOpacity>
             </View>
