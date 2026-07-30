@@ -69,6 +69,7 @@ const INITIAL_FORM: FormState = {
 };
 
 export default function CreateScreen() {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
   const authSupabase = useSupabase();
 
@@ -266,7 +267,7 @@ export default function CreateScreen() {
       <View className="flex-1 mr-3">
         <Text
           className={`font-semibold ${
-            value ? "text-blue-700" : "text-gray-700"
+            value ? "text-[#1d9bf0]" : "text-gray-700"
           }`}
         >
           {label}
@@ -277,7 +278,7 @@ export default function CreateScreen() {
       </View>
       <View
         className={`w-6 h-6 rounded-full border-2 items-center justify-center ${
-          value ? "bg-blue-600 border-blue-600" : "border-gray-300"
+          value ? "bg-[#1d9bf0] border-[#1d9bf0]" : "border-gray-300"
         }`}
       >
         {value && <Ionicons name="checkmark" size={14} color="white" />}
@@ -357,6 +358,76 @@ export default function CreateScreen() {
             </View>
           </View>
 
+          {/* Property Type */}
+          <View className={sectionClass}>
+            <Text className={labelClass}>Property Type</Text>
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex-row items-center justify-between bg-white border border-gray-200 rounded-2xl px-4 py-3 text-gray-800"
+            >
+              <Text className="text-sm font-semibold text-gray-800 capitalize">
+                {form.type || "Select Property Type"}
+              </Text>
+              <Ionicons
+                name={isDropdownOpen ? "chevron-up" : "chevron-down"}
+                size={18}
+                color="#6b7280" /* Tailwind gray-500 equivalent */
+              />
+            </TouchableOpacity>
+
+            {/* Dropdown List Items */}
+            {isDropdownOpen && (
+              <View className="mt-1 overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
+                {TYPES.map((t) => (
+                  <TouchableOpacity
+                    key={t}
+                    onPress={() => {
+                      updateForm({ type: t });
+                      setIsDropdownOpen(false); // Close dropdown after selection
+                    }}
+                    className={`px-4 py-3 border-b border-gray-100 last:border-b-0 ${
+                      form.type === t ? "bg-gray-100" : "bg-white"
+                    }`}
+                  >
+                    <Text
+                      className={`text-sm capitalize ${
+                        form.type === t
+                          ? "font-bold text-gray-900"
+                          : "font-medium text-gray-600"
+                      }`}
+                    >
+                      {t}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            {/* <View className="flex-row flex-wrap gap-2">
+              {TYPES.map((t) => (
+                <TouchableOpacity
+                  key={t}
+                  onPress={() => updateForm({ type: t })}
+                  className={`px-4 py-2 rounded-full border ${
+                    form.type === t
+                      ? "bg-blue-600 border-blue-600"
+                      : "bg-white border-gray-200"
+                  }`}
+                >
+                  <Text
+                    className={`text-sm font-semibold capitalize ${
+                      form.type === t ? "text-white" : "text-gray-600"
+                    }`}
+                  >
+                    {t}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View> */}
+          </View>
+
           {/* Basic Info */}
           <View className={sectionClass}>
             <Text className={labelClass}>Description</Text>
@@ -395,32 +466,6 @@ export default function CreateScreen() {
               onChangeText={(v) => updateForm({ subsequent_price: v })}
               keyboardType="numeric"
             />
-          </View>
-
-          {/* Property Type */}
-          <View className={sectionClass}>
-            <Text className={labelClass}>Property Type</Text>
-            <View className="flex-row flex-wrap gap-2">
-              {TYPES.map((t) => (
-                <TouchableOpacity
-                  key={t}
-                  onPress={() => updateForm({ type: t })}
-                  className={`px-4 py-2 rounded-full border ${
-                    form.type === t
-                      ? "bg-blue-600 border-blue-600"
-                      : "bg-white border-gray-200"
-                  }`}
-                >
-                  <Text
-                    className={`text-sm font-semibold capitalize ${
-                      form.type === t ? "text-white" : "text-gray-600"
-                    }`}
-                  >
-                    {t}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
           </View>
 
           <View className={sectionClass}>
@@ -468,9 +513,9 @@ export default function CreateScreen() {
                 {detectingLocation ? (
                   <ActivityIndicator size="small" color="#2563EB" />
                 ) : (
-                  <Ionicons name="locate-outline" size={13} color="#2563EB" />
+                  <Ionicons name="locate-outline" size={13} color="#1d9bf0" />
                 )}
-                <Text className="text-blue-600 text-xs font-semibold">
+                <Text className="text-[#1d9bf0] text-xs font-semibold">
                   {detectingLocation ? "Detecting..." : "Detect Location"}
                 </Text>
               </TouchableOpacity>
@@ -514,7 +559,7 @@ export default function CreateScreen() {
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={submitting || uploadingImages}
-            className="bg-blue-600 rounded-2xl py-4 items-center"
+            className="bg-[#1d9bf0] rounded-2xl py-4 items-center"
             style={{
               shadowColor: "#2563EB",
               shadowOffset: { width: 0, height: 4 },

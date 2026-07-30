@@ -11,8 +11,8 @@ function AndroidTabs() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#dc0e63",
-        tabBarInactiveTintColor: "gray",
+        tabBarActiveTintColor: "#111827",
+        tabBarInactiveTintColor: "#9CA3AF",
       }}
     >
       <Tabs.Screen
