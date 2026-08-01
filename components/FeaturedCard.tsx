@@ -1,3 +1,4 @@
+import { useSavedProperty } from "@/hooks/useSavedProperty";
 import { formatPrice } from "@/lib/utils";
 import { Property } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -5,12 +6,25 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function FeaturedCard({ property }: { property: Property }) {
+export default function FeaturedCard({
+  property,
+  onUnsave,
+  showSave = false,
+}: {
+  property: Property;
+  onUnsave?: () => void;
+  showSave?: boolean;
+}) {
   const router = useRouter();
+  const { isSaved, saveLoading, toggleSave } = useSavedProperty(
+    property.id,
+    onUnsave,
+  );
   return (
     <TouchableOpacity
       onPress={() => router.push(`/(root)/property/${property.id}`)}
-      className="w-60 mr-4 rounded-3xl overflow-hidden bg-gray-50"
+      className="w-60 mr-4 rounded-3xl overflow-hidden bg-gray-50 border
+      border-gray-100"
       // style={{
       //   shadowColor: "#000",
       //   shadowOffset: { width: 0, height: 2 },
@@ -22,7 +36,7 @@ export default function FeaturedCard({ property }: { property: Property }) {
     >
       <Image
         source={{ uri: property.images[0] }}
-        className="w-full h-44 rounded-3xl"
+        className="w-full h-44"
         resizeMode="cover"
       />
       <View className="absolute top-3 left-3 bg-[#e3e7e8] px-3 py-1 rounded-full">
@@ -30,6 +44,17 @@ export default function FeaturedCard({ property }: { property: Property }) {
           {property.type}
         </Text>
       </View>
+      <TouchableOpacity
+        onPress={toggleSave}
+        disabled={saveLoading}
+        className="absolute top-3 right-3 bg-transparent"
+      >
+        <Ionicons
+          name={isSaved ? "heart" : "heart"}
+          size={24}
+          color={isSaved ? "#FF3B30" : "#363837"}
+        />
+      </TouchableOpacity>
       {property.is_sold && (
         <View className="absolute top-3 right-3 bg-red-500 px-3 py-1 rounded-full">
           <Text className="text-xs font-semibold text-white">Sold</Text>
@@ -49,7 +74,7 @@ export default function FeaturedCard({ property }: { property: Property }) {
         </View>
 
         <View className="flex-row items-center justify-between">
-          <Text className="text-xm text-gray-500 text-base">
+          <Text className="text-sm font-semibold text-gray-900">
             {formatPrice(property.initial_price)} {"to pay"}{" "}
             {formatPrice(property.subsequent_price)}
           </Text>

@@ -52,3 +52,4 @@ Join our community of developers creating universal apps.
 ## FIXES TO DO
 
 FIX THE AMOUNT FILTER IN THE FILTERPEOPERTY AND SEARCH PAGE
+the mobile and whatsapp number text input shows error when the user add an empty space between the numbers. The input should not accept empty spaces between the numbers. It should only accept numbers.(fix it)

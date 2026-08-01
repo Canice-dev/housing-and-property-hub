@@ -70,7 +70,6 @@ export default function HomeScreen() {
                 <Text className="text-gray-900 text-base font-bold">
                   Hi, {user?.firstName ?? "User"}
                 </Text>
-                {/* <Text className="text-gray-900 text-base font-bold"></Text> */}
               </View>
               <Image
                 source={require("../../../assets/images/favicon.png")}
@@ -106,9 +105,16 @@ export default function HomeScreen() {
             </TouchableOpacity>
             {/* Featured Section */}
             <View className="mb-6">
-              <Text className="text-gray-900 text-lg font-bold px-5 mb-4">
-                Featured
-              </Text>
+              <View className="flex-row justify-between items-center mb-3">
+                <Text className="text-gray-900 text-lg font-bold px-5 mb-4">
+                  Featured Items
+                </Text>
+                <TouchableOpacity>
+                  <Text className="text-blue-600 text-sm font-semibold px-5 mb-4">
+                    See all
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               {loading ? (
                 <ActivityIndicator

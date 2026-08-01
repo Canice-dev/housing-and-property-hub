@@ -16,6 +16,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
+  Share,
   Text,
   TouchableOpacity,
   View,
@@ -25,7 +26,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 
 const { width } = Dimensions.get("window");
-const ADMIN_PHONE = "09112376172"; // replace with your WhatsApp number
+//const ADMIN_PHONE = "09112376172"; // replace with your WhatsApp number
 
 export default function PropertyDetails() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -34,6 +35,12 @@ export default function PropertyDetails() {
   const isAdmin = useUserStore((state) => state.isAdmin);
 
   const [property, setProperty] = useState<Property | null>(null);
+  // const [no_of_bedrooms, setNoOfBedrooms] = useState<number | undefined>(
+  //   undefined,
+  // );
+  // const [no_of_bathrooms, setNoOfBathrooms] = useState<number | undefined>(
+  //   undefined,
+  // );
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
@@ -91,12 +98,21 @@ export default function PropertyDetails() {
     setActiveIndex(index);
   };
 
+  const handleMobileContact = () => {
+    const message = `Hi! I'm interested in the property: ${property?.brief_description}`;
+    const url = `tel:${property?.mobile_number}`;
+    Linking.openURL(url);
+  };
   const handleContact = () => {
     const message = `Hi! I'm interested in the property: ${property?.brief_description}`;
-    const url = `https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(
+    const url = `https://wa.me/${property?.whatsapp_number}?text=${encodeURIComponent(
       message,
     )}`;
     Linking.openURL(url);
+  };
+
+  const handleShare = async () => {
+    await Share.share({ message: `Check out ${property?.brief_description}` });
   };
 
   if (!property) {
@@ -106,6 +122,11 @@ export default function PropertyDetails() {
       </View>
     );
   }
+
+  // if (no_of_bedrooms === 0 || no_of_bathrooms === 0) {
+  //   setNoOfBedrooms(property.no_of_bedrooms);
+  //   setNoOfBathrooms(property.no_of_bathrooms);
+  // }
 
   const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${
     property.longitude - 0.003
@@ -148,22 +169,41 @@ export default function PropertyDetails() {
               <TouchableOpacity
                 onPress={() => router.back()}
                 className="w-10 h-10 bg-white rounded-full items-center justify-center"
-                style={{ elevation: 3 }}
+                style={{
+                  elevation: 3,
+                  backgroundColor: "rgba(255,255,255,0.88)",
+                }}
               >
                 <Ionicons name="arrow-back" size={20} color="#111827" />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={toggleSave}
-                disabled={saveLoading}
-                className="w-10 h-10 bg-white rounded-full items-center justify-center"
-                style={{ elevation: 3 }}
-              >
-                <Ionicons
-                  name={isSaved ? "heart" : "heart"}
-                  size={20}
-                  color={isSaved ? "#FF3B30" : "#111827"}
-                />
-              </TouchableOpacity>
+              <View className="absolute right-4 flex-row gap-2">
+                <TouchableOpacity
+                  onPress={handleShare}
+                  className="w-10 h-10 bg-white rounded-full items-center justify-center"
+                  style={{
+                    elevation: 3,
+                    backgroundColor: "rgba(255,255,255,0.88)",
+                  }}
+                  accessibilityLabel="Share property"
+                >
+                  <Ionicons name="share-social" size={20} color="#111827" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={toggleSave}
+                  disabled={saveLoading}
+                  className="w-10 h-10 bg-white rounded-full items-center justify-center"
+                  style={{
+                    elevation: 3,
+                    backgroundColor: "rgba(255,255,255,0.88)",
+                  }}
+                >
+                  <Ionicons
+                    name={isSaved ? "heart" : "heart"}
+                    size={20}
+                    color={isSaved ? "#FF3B30" : "#111827"}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </SafeAreaView>
         </View>
@@ -174,11 +214,11 @@ export default function PropertyDetails() {
           style={{ opacity: property.is_sold ? 0.6 : 1 }}
         >
           <View className="flex-row gap-2 mb-3 flex-wrap">
-            <Text className="text-gray-800 text-1xs font-semibold capitalize">
+            <Text className="text-2xs font-semibold text-gray-500">
               {property.type}
             </Text>
             {property.is_featured && (
-              <Text className="text-[#018A4D] text-1xs font-semibold ml-2">
+              <Text className="text-[#018A4D] text-2xs font-semibold">
                 Featured
               </Text>
             )}
@@ -188,17 +228,17 @@ export default function PropertyDetails() {
               </View>
             )}
           </View>
-          <Text className="text-2xl text-center font-bold text-gray-900 mb-3">
+          <Text className="text-xl font-bold text-gray-900 mb-1">
             {property.brief_description}
           </Text>
           <Text className="text-md text-gray-600 mb-1">
             {property.detailed_description}
           </Text>
           <View className="flex-row items-center gap-2 mb-4 mt-4">
-            <Text className="text-blue-600 text-xl font-bold mb-4">
+            <Text className="text-xl font-bold text-gray-900">
               N{property.initial_price}
             </Text>
-            <Text className="text-blue-600 text-xl font-bold mb-4">
+            <Text className="text-xl font-bold text-gray-900">
               N{property.subsequent_price}
             </Text>
           </View>
@@ -208,12 +248,25 @@ export default function PropertyDetails() {
             Location
           </Text>
 
-          <View className="flex-row items-center gap-2 mb-4">
+          <View className="flex-row items-center gap-2 mb-5">
             <Ionicons name="location-outline" size={16} color="#6B7280" />
             <Text className="text-gray-500 text-sm flex-1">
               {property.address}, {property.city} {property.state}
             </Text>
           </View>
+
+          {/* <View className="px-5 py-5 border-b border-gray-100">
+            <View className="flex-row justify-between">
+              <View className="items-center">
+                <Ionicons name="bed-outline" size={20} color="#6B7280" />
+                <Text>{no_of_bedrooms}</Text>
+              </View>
+              <View className="items-center">
+                <Ionicons name="water-outline" size={20} color="#6B7280" />
+                <Text>{no_of_bathrooms}</Text>
+              </View>
+            </View>
+          </View> */}
 
           {/* MAP PREVIEW */}
           <TouchableOpacity
@@ -246,15 +299,25 @@ export default function PropertyDetails() {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={handleContact}
-            className="flex-row items-center justify-center gap-2 bg-green-600 py-4 rounded-2xl mb-4"
-          >
-            <Ionicons name="logo-whatsapp" size={20} color="white" />
-            <Text className="text-white font-bold text-base">
-              Contact Agent
-            </Text>
-          </TouchableOpacity>
+          <View className="flex-row gap-3 mb-4">
+            <TouchableOpacity
+              onPress={handleMobileContact}
+              className="w-1/2 flex-row items-center justify-center gap-2 bg-[#1d9bf0] py-4 rounded-2xl mb-4"
+            >
+              <Ionicons name="call-outline" size={20} color="white" />
+              <Text className="text-white font-bold text-base">Call Agent</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleContact}
+              className="w-1/2 flex-row items-center justify-center gap-2 bg-green-600 py-4 rounded-2xl mb-4"
+            >
+              <Ionicons name="logo-whatsapp" size={20} color="white" />
+              <Text className="text-white font-bold text-base">
+                Contact Agent
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           {isAdmin && (
             <View className="flex-row gap-3">

@@ -24,13 +24,14 @@ export default function PropertyCard({
   return (
     <TouchableOpacity
       onPress={() => router.push(`/(root)/property/${property.id}`)}
-      className="flex-row bg-white rounded-2xl mb-4 overflow-hidden"
+      className="flex-row bg-white rounded-xl mb-4 overflow-hidden border
+      border-gray-100"
       style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
-        elevation: 3,
+        // shadowColor: "#000",
+        // shadowOffset: { width: 0, height: 1 },
+        // shadowOpacity: 0.06,
+        // shadowRadius: 8,
+        // elevation: 3,
         opacity: property.is_sold ? 0.5 : 1,
       }}
     >
@@ -43,30 +44,22 @@ export default function PropertyCard({
       <View className="flex-1 p-3 justify-between">
         <View>
           <Text
-            className="text-sm font-bold text-gray-800 mb-1"
-            numberOfLines={1}
+            className="text-sm font-semibold text-gray-800 mb-2"
+            numberOfLines={2}
           >
-            {property.type}
-          </Text>
-          <Text
-            className="text-sm font-semibold text-gray-800 mb-1"
-            numberOfLines={1}
-          >
-            {property.description}
+            {property.brief_description}
           </Text>
           <View className="flex-row items-center gap-1">
             <Ionicons name="location-outline" size={11} color="#6B7280" />
             <Text className="text-xs text-gray-500" numberOfLines={1}>
-              {property.address}, {property.city}
+              {property.address}, {property.city} {property.state}
             </Text>
           </View>
         </View>
 
         <View className="flex-row items-center justify-between">
-          <Text className="text-blue-600 font-bold text-sm">
-            {formatPrice(property.initial_price)}
-          </Text>
-          <Text className="text-blue-600 font-bold text-sm">
+          <Text className="text-sm font-semibold text-gray-900">
+            {formatPrice(property.initial_price)} {"to pay"}{" "}
             {formatPrice(property.subsequent_price)}
           </Text>
           {property.is_sold && (
