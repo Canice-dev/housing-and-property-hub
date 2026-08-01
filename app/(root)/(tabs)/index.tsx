@@ -66,40 +66,40 @@ export default function HomeScreen() {
           <View>
             {/* Header */}
             <View className="flex-row items-center justify-between px-5 pt-4 pb-5">
+              <View className="items-start">
+                <Text className="text-gray-900 text-base font-bold">
+                  Hi, {user?.firstName ?? "User"}
+                </Text>
+                {/* <Text className="text-gray-900 text-base font-bold"></Text> */}
+              </View>
               <Image
                 source={require("../../../assets/images/favicon.png")}
                 style={{ width: 90, height: 36 }}
                 resizeMode="contain"
               />
-              <View className="items-end">
-                <Text className="text-gray-500 text-xs">Good morning 👋</Text>
-                <Text className="text-gray-900 text-base font-bold">
-                  {user?.firstName ?? "User"}
-                </Text>
-              </View>
             </View>
 
             {/* Search Bar */}
             <TouchableOpacity
               onPress={() => router.push("/(root)/(tabs)/search")}
-              className="mx-5 mb-6 flex-row items-center bg-white rounded-2xl px-4 py-3 gap-3"
+              className="mx-5 mb-6 flex-row items-center bg-white rounded-full px-4 py-3 gap-3"
               style={{
                 shadowColor: "#000",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.06,
-                shadowRadius: 6,
+                shadowOffset: { width: 0, height: 0.5 },
+                shadowOpacity: 0.03,
+                shadowRadius: 3,
                 elevation: 2,
               }}
             >
               <Ionicons name="search-outline" size={18} color="#9CA3AF" />
               <Text className="text-gray-400 text-sm flex-1">
-                Search properties, cities...
+                Start your search
               </Text>
               <TouchableOpacity
                 onPress={() =>
                   router.push("/(root)/(tabs)/search?openFilters=true")
                 }
-                className="w-8 h-8 bg-[#dc0e63] rounded-xl items-center justify-center"
+                className="w-8 h-8 bg-[#018a4c] rounded-xl items-center justify-center"
               >
                 <Ionicons name="options-outline" size={15} color="white" />
               </TouchableOpacity>

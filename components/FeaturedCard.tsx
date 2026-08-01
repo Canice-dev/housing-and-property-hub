@@ -10,19 +10,19 @@ export default function FeaturedCard({ property }: { property: Property }) {
   return (
     <TouchableOpacity
       onPress={() => router.push(`/(root)/property/${property.id}`)}
-      className="w-60 mr-4 rounded-3xl overflow-hidden bg-white"
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
-        elevation: 4,
-        opacity: property.is_sold ? 0.5 : 1,
-      }}
+      className="w-60 mr-4 rounded-3xl overflow-hidden bg-gray-50"
+      // style={{
+      //   shadowColor: "#000",
+      //   shadowOffset: { width: 0, height: 2 },
+      //   shadowOpacity: 0.08,
+      //   shadowRadius: 12,
+      //   elevation: 4,
+      //   opacity: property.is_sold ? 0.5 : 1,
+      // }}
     >
       <Image
         source={{ uri: property.images[0] }}
-        className="w-full h-44"
+        className="w-full h-44 rounded-3xl"
         resizeMode="cover"
       />
       <View className="absolute top-3 left-3 bg-[#e3e7e8] px-3 py-1 rounded-full">
@@ -37,25 +37,20 @@ export default function FeaturedCard({ property }: { property: Property }) {
       )}
 
       <View className="p-4">
-        <Text
-          className="text-base font-bold text-gray-800 mb-1"
-          numberOfLines={1}
-        >
-          {property.description}
+        <Text className="text-base text-gray-800 mb-2" numberOfLines={1}>
+          {property.brief_description}
         </Text>
 
         <View className="flex-row items-center gap-1 mb-3">
           <Ionicons name="location-outline" size={13} color="#6B7280" />
           <Text className="text-xs text-gray-500" numberOfLines={1}>
-            {property.address}, {property.city}
+            {property.address}, {property.city} {property.state}
           </Text>
         </View>
 
         <View className="flex-row items-center justify-between">
           <Text className="text-xm text-gray-500 text-base">
-            {formatPrice(property.initial_price)}
-          </Text>
-          <Text className="text-xm text-gray-500 text-base">
+            {formatPrice(property.initial_price)} {"to pay"}{" "}
             {formatPrice(property.subsequent_price)}
           </Text>
         </View>

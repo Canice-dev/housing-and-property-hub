@@ -19,14 +19,16 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const TYPES = [
-  "apartment",
-  "house",
-  "self contained",
-  "semi-self contained",
-  "single room",
-  "land",
-  "item",
-  "others",
+  "Apartment",
+  "Mini-Flat",
+  "Self-Contained",
+  "Semi self-contained",
+  "Single room",
+  "Shop/Store",
+  "Land",
+  "Gadget",
+  "Item",
+  "Others",
 ] as const;
 type PropertyType = (typeof TYPES)[number];
 
@@ -40,12 +42,18 @@ const sectionClass = "mb-5";
 
 interface FormState {
   type: PropertyType;
-  description: string;
+  brief_description: string;
+  detailed_description: string;
   initial_price: string;
   subsequent_price: string;
   address: string;
   city: string;
   state: string;
+  mobile_number: string;
+  whatsapp_number: string;
+  no_of_bedrooms: number;
+  no_of_bathrooms: number;
+  duration_of_stay: string;
   latitude: string;
   longitude: string;
   isFeatured: boolean;
@@ -54,13 +62,19 @@ interface FormState {
 }
 
 const INITIAL_FORM: FormState = {
-  type: "apartment",
-  description: "",
+  type: "Apartment",
+  brief_description: "",
+  detailed_description: "",
   initial_price: "",
   subsequent_price: "",
   address: "",
   city: "",
   state: "",
+  mobile_number: "",
+  whatsapp_number: "",
+  no_of_bedrooms: 0,
+  no_of_bathrooms: 0,
+  duration_of_stay: "",
   latitude: "",
   longitude: "",
   isFeatured: false,
@@ -181,13 +195,13 @@ export default function CreateScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!form.description.trim())
-      return Alert.alert("Validation", "Title is required.");
+    if (!form.brief_description.trim())
+      return Alert.alert("Validation", "Brief description is required.");
+
+    if (!form.detailed_description.trim())
+      return Alert.alert("Validation", "Detailed description is required.");
 
     if (!form.initial_price.trim())
-      return Alert.alert("Validation", "Price is required.");
-
-    if (!form.subsequent_price.trim())
       return Alert.alert("Validation", "Price is required.");
 
     const priceNum = Number(form.initial_price);
@@ -210,10 +224,16 @@ export default function CreateScreen() {
 
     if (!form.address.trim())
       return Alert.alert("Validation", "Address is required.");
+
     if (!form.city.trim())
       return Alert.alert("Validation", "City is required.");
-    if (!form.state.trim())
-      return Alert.alert("Validation", "State is required.");
+
+    if (!form.mobile_number.trim())
+      return Alert.alert("Validation", "Mobile Number is required.");
+
+    if (!form.whatsapp_number.trim())
+      return Alert.alert("Validation", "Whatsapp Number is required.");
+
     if (form.images.length === 0)
       return Alert.alert("Validation", "Please upload at least one image.");
 
@@ -221,11 +241,18 @@ export default function CreateScreen() {
 
     const { error } = await authSupabase.from("properties").insert({
       type: form.type,
-      description: form.description.trim(),
+      brief_description: form.brief_description.trim(),
+      detailed_description: form.detailed_description.trim(),
       initial_price: priceNum,
       subsequent_price: subPriceNum,
       address: form.address.trim(),
       city: form.city.trim(),
+      state: form.state.trim(),
+      mobile_number: form.mobile_number.trim(),
+      whatsapp_number: form.whatsapp_number.trim(),
+      no_of_bedrooms: form.no_of_bedrooms,
+      no_of_bathrooms: form.no_of_bathrooms,
+      duration_of_stay: form.duration_of_stay.trim(),
       latitude: form.latitude ? Number(form.latitude) : null,
       longitude: form.longitude ? Number(form.longitude) : null,
       images: form.images,
@@ -242,21 +269,52 @@ export default function CreateScreen() {
     }
 
     setForm(INITIAL_FORM);
-    Alert.alert("Success! 🎉", "Property listed successfully.", [
+    Alert.alert("Success!", "Property have been listed successfully.", [
       { text: "OK", onPress: () => router.replace("/(root)/(tabs)") },
     ]);
   };
+
+  const Counter = ({
+    label,
+    value,
+    onChange,
+  }: {
+    label: string;
+    value: number;
+    onChange: (v: number) => void;
+  }) => (
+    <View className="flex-1">
+      <Text className={labelClass}>{label}</Text>
+      <View className="flex-row items-center bg-white border border-gray-200 rounded-2xl overflow-hidden">
+        <TouchableOpacity
+          onPress={() => onChange(Math.max(1, value - 1))}
+          className="w-11 h-11 items-center justify-center"
+        >
+          <Ionicons name="remove" size={18} color="#374151" />
+        </TouchableOpacity>
+        <Text className="flex-1 text-center text-gray-800 font-bold text-base">
+          {value}
+        </Text>
+        <TouchableOpacity
+          onPress={() => onChange(value + 1)}
+          className="w-11 h-11 items-center justify-center"
+        >
+          <Ionicons name="add" size={18} color="#374151" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   const Toggle = ({
     label,
     value,
     onChange,
-    description,
+    brief_description,
   }: {
     label: string;
     value: boolean;
     onChange: (v: boolean) => void;
-    description?: string;
+    brief_description?: string;
   }) => (
     <TouchableOpacity
       onPress={() => onChange(!value)}
@@ -272,8 +330,10 @@ export default function CreateScreen() {
         >
           {label}
         </Text>
-        {description && (
-          <Text className="text-xs text-gray-400 mt-0.5">{description}</Text>
+        {brief_description && (
+          <Text className="text-xs text-gray-400 mt-0.5">
+            {brief_description}
+          </Text>
         )}
       </View>
       <View
@@ -430,13 +490,25 @@ export default function CreateScreen() {
 
           {/* Basic Info */}
           <View className={sectionClass}>
-            <Text className={labelClass}>Description</Text>
+            <Text className={labelClass}>Brief Description</Text>
             <TextInput
               className={`${inputClass} h-24`}
-              placeholder="Describe the property..."
+              placeholder="Give a brief Description of the property..."
               placeholderTextColor="#9CA3AF"
-              value={form.description}
-              onChangeText={(v) => updateForm({ description: v })}
+              value={form.brief_description}
+              onChangeText={(v) => updateForm({ brief_description: v })}
+              multiline
+              textAlignVertical="top"
+            />
+          </View>
+          <View className={sectionClass}>
+            <Text className={labelClass}>Detailed Description</Text>
+            <TextInput
+              className={`${inputClass} h-24`}
+              placeholder="Give a Detailed Description of the property..."
+              placeholderTextColor="#9CA3AF"
+              value={form.detailed_description}
+              onChangeText={(v) => updateForm({ detailed_description: v })}
               multiline
               textAlignVertical="top"
             />
@@ -501,6 +573,43 @@ export default function CreateScreen() {
             />
           </View>
 
+          <View className={sectionClass}>
+            <Text className={labelClass}>Mobile Number</Text>
+            <TextInput
+              className={inputClass}
+              placeholder="e.g. 09134859402"
+              placeholderTextColor="#9CA3AF"
+              value={form.mobile_number}
+              onChangeText={(v) => updateForm({ mobile_number: v })}
+              keyboardType="numeric"
+            />
+          </View>
+          <View className={sectionClass}>
+            <Text className={labelClass}>Whatsapp Number</Text>
+            <TextInput
+              className={inputClass}
+              placeholder="e.g. 09134859402"
+              placeholderTextColor="#9CA3AF"
+              value={form.whatsapp_number}
+              onChangeText={(v) => updateForm({ whatsapp_number: v })}
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* Bedrooms / Bathrooms */}
+          <View className="flex-row gap-4 mb-5">
+            <Counter
+              label="Bedrooms"
+              value={form.no_of_bedrooms}
+              onChange={(v) => updateForm({ no_of_bedrooms: v })}
+            />
+            <Counter
+              label="Bathrooms"
+              value={form.no_of_bathrooms}
+              onChange={(v) => updateForm({ no_of_bathrooms: v })}
+            />
+          </View>
+
           {/* Coordinates */}
           <View className={sectionClass}>
             <View className="flex-row items-center justify-between mb-1.5">
@@ -549,7 +658,7 @@ export default function CreateScreen() {
           <View className="gap-3 mb-5">
             <Toggle
               label="Featured Property"
-              description="Show this in the Featured section on home"
+              brief_description="Show this in the Featured section on home"
               value={form.isFeatured}
               onChange={(v) => updateForm({ isFeatured: v })}
             />

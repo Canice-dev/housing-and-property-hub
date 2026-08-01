@@ -1,7 +1,6 @@
 import { useSavedProperty } from "@/hooks/useSavedProperty";
 import { useSupabase } from "@/hooks/useSupabase";
 import { supabase } from "@/lib/supabase";
-import { formatPrice } from "@/lib/utils";
 import { useUserStore } from "@/store/userStore";
 import { Property } from "@/types";
 import { useAuth } from "@clerk/expo";
@@ -93,7 +92,7 @@ export default function PropertyDetails() {
   };
 
   const handleContact = () => {
-    const message = `Hi! I'm interested in the property: ${property?.description}`;
+    const message = `Hi! I'm interested in the property: ${property?.brief_description}`;
     const url = `https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(
       message,
     )}`;
@@ -126,7 +125,7 @@ export default function PropertyDetails() {
                 <TouchableOpacity onPress={() => setImageViewerVisible(true)}>
                   <Image
                     source={{ uri: item }}
-                    style={{ width, height: 300 }}
+                    style={{ width, height: 350 }}
                     resizeMode="cover"
                   />
                 </TouchableOpacity>
@@ -175,17 +174,13 @@ export default function PropertyDetails() {
           style={{ opacity: property.is_sold ? 0.6 : 1 }}
         >
           <View className="flex-row gap-2 mb-3 flex-wrap">
-            <View className="bg-blue-50 px-3 py-1 rounded-full">
-              <Text className="text-blue-600 text-xs font-semibold capitalize">
-                {property.type}
-              </Text>
-            </View>
+            <Text className="text-gray-800 text-1xs font-semibold capitalize">
+              {property.type}
+            </Text>
             {property.is_featured && (
-              <View className="bg-amber-50 px-3 py-1 rounded-full">
-                <Text className="text-amber-600 text-xs font-semibold">
-                  Featured
-                </Text>
-              </View>
+              <Text className="text-[#018A4D] text-1xs font-semibold ml-2">
+                Featured
+              </Text>
             )}
             {property.is_sold && (
               <View className="bg-red-50 px-3 py-1 rounded-full">
@@ -193,15 +188,20 @@ export default function PropertyDetails() {
               </View>
             )}
           </View>
-          <Text className="text-2xl font-bold text-gray-900 mb-1">
-            {property.description}
+          <Text className="text-2xl text-center font-bold text-gray-900 mb-3">
+            {property.brief_description}
           </Text>
-          <Text className="text-blue-600 text-xl font-bold mb-4">
-            {formatPrice(property.initial_price)}
+          <Text className="text-md text-gray-600 mb-1">
+            {property.detailed_description}
           </Text>
-          <Text className="text-blue-600 text-xl font-bold mb-4">
-            {formatPrice(property.subsequent_price)}
-          </Text>
+          <View className="flex-row items-center gap-2 mb-4 mt-4">
+            <Text className="text-blue-600 text-xl font-bold mb-4">
+              N{property.initial_price}
+            </Text>
+            <Text className="text-blue-600 text-xl font-bold mb-4">
+              N{property.subsequent_price}
+            </Text>
+          </View>
 
           {/* Location */}
           <Text className="text-base font-bold text-gray-900 mb-2">
@@ -211,7 +211,7 @@ export default function PropertyDetails() {
           <View className="flex-row items-center gap-2 mb-4">
             <Ionicons name="location-outline" size={16} color="#6B7280" />
             <Text className="text-gray-500 text-sm flex-1">
-              {property.address}, {property.city}
+              {property.address}, {property.city} {property.state}
             </Text>
           </View>
 
