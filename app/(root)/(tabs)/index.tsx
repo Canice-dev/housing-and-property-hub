@@ -109,7 +109,9 @@ export default function HomeScreen() {
                 <Text className="text-gray-900 text-lg font-bold px-5 mb-4">
                   Featured Items
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => router.push("/(root)/properties/featured")}
+                >
                   <Text className="text-blue-600 text-sm font-semibold px-5 mb-4">
                     See all
                   </Text>
