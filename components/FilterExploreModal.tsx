@@ -1,7 +1,14 @@
 import { PropertyType, useFilterStore } from "@/store/filterStore";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
-import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Modal,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const TYPES: { label: string; value: PropertyType }[] = [
   { label: "All", value: null },
@@ -37,6 +44,9 @@ export default function FilterExploreModal({
     setMaxPrice,
     resetFilters,
   } = useFilterStore();
+
+  const [localMin, setLocalMin] = useState(minPrice ? String(minPrice) : "");
+  const [localMax, setLocalMax] = useState(maxPrice ? String(maxPrice) : "");
 
   const activeCount = [
     type,
@@ -99,6 +109,58 @@ export default function FilterExploreModal({
                 </Text>
               </TouchableOpacity>
             ))}
+          </View>
+          <Text className="text-base font-bold text-gray-800 mb-3">
+            Price Range
+          </Text>
+          <View className="flex-row gap-3 mb-3">
+            {[
+              {
+                label: "Min Price",
+                value: localMin,
+                onChange: setLocalMin,
+                placeholder: "0",
+              },
+              {
+                label: "Max Price",
+                value: localMax,
+                onChange: setLocalMax,
+                placeholder: "Any",
+              },
+            ].map(({ label, value, onChange, placeholder }) => (
+              <View key={label} className="flex-1">
+                <Text className="text-xs text-gray-500 mb-1.5 font-medium">
+                  {label}
+                </Text>
+                <View className="flex-row items-center bg-white rounded-2xl px-3 border border-gray-200">
+                  <Text className="text-gray-400 text-sm mr-1">₦</Text>
+                  <TextInput
+                    className="flex-1 py-3 text-gray-800"
+                    placeholder={placeholder}
+                    placeholderTextColor="#9CA3AF"
+                    keyboardType="numeric"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                </View>
+              </View>
+            ))}
+          </View>
+          <Text className="text-base font-bold text-gray-800 mb-3">
+            Location
+          </Text>
+          <View className="flex-col gap-3 mb-3">
+            <TextInput
+              className="flex-1 py-3 px-3 text-gray-800 border border-gray-300 rounded-2xl"
+              placeholder="City..."
+              placeholderTextColor="#9CA3AF"
+              placeholderClassName="pl-5"
+            />
+            <TextInput
+              className="flex-1 py-3 px-3 text-gray-800 border border-gray-300 rounded-2xl"
+              placeholder="State..."
+              placeholderTextColor="#9CA3AF"
+            />
           </View>
         </ScrollView>
         <View className="px-5 pb-8 pt-4 bg-white border-t border-gray-100">

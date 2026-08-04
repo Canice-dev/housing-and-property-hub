@@ -149,6 +149,19 @@ export default function ProfileScreen() {
             )
           }
         />
+        <MenuItem icon="settings-outline" label="Settings" />
+        <TouchableOpacity
+          className="flex-row justify-between items-center w-full h-14 rounded-2xl px-5 bg-gray-50"
+          onPress={() => router.push("/(root)/posts/[id]")}
+        >
+          <View className="flex-row items-center gap-3">
+            <Ionicons name="add-circle-outline" size={24} color={"#6b7280"} />
+            <Text className="text-gray-700">All Posts</Text>
+          </View>
+          <View>
+            <Ionicons name="chevron-forward" size={20} color={"#d1d5db"} />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity
