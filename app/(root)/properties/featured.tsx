@@ -1,4 +1,5 @@
 import FeaturedExploreCard from "@/components/FeaturedExploreCard";
+import FilterExploreModal from "@/components/FilterExploreModal";
 import { supabase } from "@/lib/supabase";
 import { PropertyType, useFilterStore } from "@/store/filterStore";
 import { Property } from "@/types";
@@ -49,11 +50,22 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
     setMinPrice,
     setMaxPrice,
   } = useFilterStore();
+
+  const activeFilterCount = [
+    type !== null,
+    description !== null,
+    address !== null,
+    city !== null,
+    minPrice !== null,
+    maxPrice !== null,
+  ].filter(Boolean).length;
+
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   const [featured, setFeatured] = useState<Property[]>([]);
   const [recommended, setRecommended] = useState<Property[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   const fetchProperties = async () => {
     setLoading(true);
@@ -107,7 +119,7 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
             elevation: 2,
           }}
         >
-          <Text className="text-gray-900 font-medium text-sm">
+          <Text className="text-gray-900 font-semibold text-base">
             Featured Properties
           </Text>
           <Text className="text-gray-900 font-medium text-sm">
@@ -116,10 +128,21 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="p-2 rounded-full"
+          onPress={() => setShowFilters(true)}
+
+          className={`p-2 rounded-full ${
+            activeFilterCount > 0 ? "bg-transparent" : "bg-transparent"
+          }`}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Ionicons name="options-outline" size={20} color="#111827" />
+          {activeFilterCount > 0 && (
+            <View className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full items-center justify-center">
+              <Text className="text-white text-[9px] font-bold">
+                {activeFilterCount}
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
       <ScrollView
@@ -166,6 +189,7 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
         )}
       </View> */}
       <FlatList
+        className="mb-20"
         data={featured}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
@@ -182,6 +206,12 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
             </View>
           ) : null
         }
+      />
+
+      {/* Filter Modal */}
+      <FilterExploreModal
+        visible={showFilters}
+        onClose={() => setShowFilters(false)}
       />
     </SafeAreaView>
   );

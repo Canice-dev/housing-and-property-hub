@@ -7,6 +7,7 @@ export type PropertyType =
   | "semi-self contained"
   | "single room"
   | "land"
+  | "Gadget"
   | "item"
   | "others"
   | null;

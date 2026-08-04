@@ -85,6 +85,15 @@ export default function ProfileScreen() {
   }
   return (
     <SafeAreaView className="flex-1 bg-white mb-10">
+      <View className="flex-row justify-end px-4 pt-2">
+        <TouchableOpacity
+          onPress={() =>
+            Alert.alert("Coming Soon", "Notifications coming soon!")
+          }
+        >
+          <Ionicons name="notifications-outline" size={25} />
+        </TouchableOpacity>
+      </View>
       <View className="items-center py-8">
         <View className="relative">
           <Image
@@ -103,6 +112,7 @@ export default function ProfileScreen() {
             )}
           </TouchableOpacity>
         </View>
+
         <Text className="text-xl font-bold text-gray-800">
           {user.firstName} {user.lastName}
         </Text>
