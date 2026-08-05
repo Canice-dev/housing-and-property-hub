@@ -1,25 +1,58 @@
+import { useSupabase } from "@/hooks/useSupabase";
+import { Property } from "@/types";
 import { useAuth, useUser } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Image,
   Linking,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+interface SavedProperty {
+  id: string;
+  property_id: string;
+  properties: Property;
+}
+
 export default function ProfileScreen() {
+  const authSupabase = useSupabase();
   const { user, isLoaded } = useUser();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const { signOut } = useAuth();
+  const { signOut, userId } = useAuth();
   const router = useRouter();
+
+  const [saved, setSaved] = useState<SavedProperty[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchSaved = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
+    const { data } = await authSupabase
+      .from("saved_properties")
+      .select("id, property_id, properties(*)")
+      .eq("user_clerk_id", userId)
+      .order("id", { ascending: false });
+
+    setSaved((data as unknown as SavedProperty[]) ?? []);
+    setLoading(false);
+  }, [userId]);
+
+  // Refresh every time the tab comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchSaved();
+    }, [fetchSaved]),
+  );
 
   const handleUpdateProfileImage = async () => {
     try {
@@ -84,93 +117,106 @@ export default function ProfileScreen() {
     );
   }
   return (
-    <SafeAreaView className="flex-1 bg-white mb-10">
-      <View className="flex-row justify-end px-4 pt-2">
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-row justify-between px-5 pt-4 pb-3">
+        <Text className="text-2xl font-bold text-gray-900">Profile</Text>
         <TouchableOpacity
-          onPress={() =>
-            Alert.alert("Coming Soon", "Notifications coming soon!")
-          }
+          // onPress={() => router.push()}
+          className="w-10 h-10 bg-white rounded-full items-center justify-center"
         >
-          <Ionicons name="notifications-outline" size={25} />
+          <Ionicons name="settings-outline" size={20} color="#111827" />
         </TouchableOpacity>
       </View>
-      <View className="items-center py-8">
-        <View className="relative">
-          <Image
-            source={{ uri: user.imageUrl }}
-            className="w-24 h-24 rounded-full mb-4"
+      {/* added a scrollView to be able to scroll view */}
+      <ScrollView>
+        <View className="items-center py-8">
+          <View className="relative">
+            <Image
+              source={{ uri: user.imageUrl }}
+              className="w-24 h-24 rounded-full mb-4"
+            />
+            <TouchableOpacity
+              onPress={handleUpdateProfileImage}
+              disabled={isUpdating}
+              className="absolute bottom-3 right-0 bg-blue-600 rounded-full p-2"
+            >
+              {isUpdating ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Ionicons name="camera" size={16} color="white" />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <Text className="text-xl font-bold text-gray-800">
+            {user.firstName} {user.lastName}
+          </Text>
+          <Text className="text-gray-500 mt-1">
+            {user.emailAddresses[0].emailAddress}
+          </Text>
+        </View>
+
+        <View className="flex-row justify-around mb-6">
+          <TouchableOpacity
+            onPress={() => router.push("/(root)/(tabs)/starred")}
+            className="px-5 pt-4 pb-3 items-center"
+          >
+            {!loading && (
+              <Text className="text-sm text-gray-400 mt-1">{saved.length}</Text>
+            )}
+            <Text className="text-base text-gray-700 mt-1">Saved</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/(root)/posts/[id]")}>
+            <Text className="text-base text-gray-700 mt-1">My</Text>
+            <Text className="text-base text-gray-700">Listings</Text>
+          </TouchableOpacity>
+        </View>
+        {/* Menu Items */}
+        <View className="px-6 gap-2">
+          <MenuItem
+            icon="star"
+            label="Starred Properties"
+            onPress={() => router.push("/(root)/(tabs)/starred")}
+          />
+          <MenuItem
+            icon="notifications-outline"
+            label="Notifications"
+            onPress={() =>
+              Alert.alert("Coming Soon", "Notifications coming soon!")
+            }
+          />
+
+          <MenuItem
+            icon="help-circle-outline"
+            label="Help & Support"
+            onPress={() =>
+              Linking.openURL(
+                "mailto:caniceaba404@gmail.com?subject=Help%20%26%20Support%20-%20Kribb%20App",
+              )
+            }
           />
           <TouchableOpacity
-            onPress={handleUpdateProfileImage}
-            disabled={isUpdating}
-            className="absolute bottom-3 right-0 bg-blue-600 rounded-full p-2"
+            className="flex-row justify-between items-center w-full h-14 rounded-2xl px-5 bg-gray-50"
+            onPress={() => router.push("/(root)/posts/[id]")}
           >
-            {isUpdating ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Ionicons name="camera" size={16} color="white" />
-            )}
+            <View className="flex-row items-center gap-3">
+              <Ionicons name="add-circle-outline" size={24} color={"#6b7280"} />
+              <Text className="text-gray-700">All Posts</Text>
+            </View>
+            <View>
+              <Ionicons name="chevron-forward" size={20} color={"#d1d5db"} />
+            </View>
           </TouchableOpacity>
         </View>
 
-        <Text className="text-xl font-bold text-gray-800">
-          {user.firstName} {user.lastName}
-        </Text>
-        <Text className="text-gray-500 mt-1">
-          {user.emailAddresses[0].emailAddress}
-        </Text>
-      </View>
-
-      {/* Menu Items */}
-      <View className="px-6 gap-2">
-        <MenuItem
-          icon="star"
-          label="Starred Properties"
-          onPress={() => router.push("/(root)/(tabs)/starred")}
-        />
-        <MenuItem
-          icon="notifications-outline"
-          label="Notifications"
-          onPress={() =>
-            Alert.alert("Coming Soon", "Notifications coming soon!")
-          }
-        />
-        <MenuItem
-          icon="settings-outline"
-          label="Settings"
-          onPress={() => Alert.alert("Coming Soon", "Settings coming soon!")}
-        />
-        <MenuItem
-          icon="help-circle-outline"
-          label="Help & Support"
-          onPress={() =>
-            Linking.openURL(
-              "mailto:caniceaba404@gmail.com?subject=Help%20%26%20Support%20-%20Kribb%20App",
-            )
-          }
-        />
-        <MenuItem icon="settings-outline" label="Settings" />
         <TouchableOpacity
-          className="flex-row justify-between items-center w-full h-14 rounded-2xl px-5 bg-gray-50"
-          onPress={() => router.push("/(root)/posts/[id]")}
+          onPress={handleSignOut}
+          className="flex-row items-center justify-center gap-2 bg-red-50 py-4 rounded-2xl border border-red-100 m-8"
         >
-          <View className="flex-row items-center gap-3">
-            <Ionicons name="add-circle-outline" size={24} color={"#6b7280"} />
-            <Text className="text-gray-700">All Posts</Text>
-          </View>
-          <View>
-            <Ionicons name="chevron-forward" size={20} color={"#d1d5db"} />
-          </View>
+          <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+          <Text className="text-red-500 font-semibold text-base">Sign Out</Text>
         </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity
-        onPress={handleSignOut}
-        className="flex-row items-center justify-center gap-2 bg-red-50 py-4 rounded-2xl border border-red-100 m-8"
-      >
-        <Ionicons name="log-out-outline" size={20} color="#EF4444" />
-        <Text className="text-red-500 font-semibold text-base">Sign Out</Text>
-      </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }

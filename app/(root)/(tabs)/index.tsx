@@ -18,7 +18,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const router = useRouter();
   const [featured, setFeatured] = useState<Property[]>([]);
   const [recommended, setRecommended] = useState<Property[]>([]);
@@ -55,6 +55,14 @@ export default function HomeScreen() {
     }, []),
   );
 
+  if (!isLoaded || !user) {
+    return (
+      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+        <ActivityIndicator size="large" color="#3B82F6" />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <FlatList
@@ -67,42 +75,65 @@ export default function HomeScreen() {
             {/* Header */}
             <View className="flex-row items-center justify-between px-5 pt-4 pb-5">
               <View className="items-start">
-                <Text className="text-gray-900 text-base font-bold">
-                  Hi, {user?.firstName ?? "User"}
-                </Text>
+                <View className="flex-row items-center gap-3">
+                  <Image
+                    source={{ uri: user.imageUrl }}
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <View className="flex-col">
+                    <Text className="text-gray-900 text-base font-bold">
+                      Hi, {user?.firstName ?? "User"}
+                    </Text>
+                    <Text className="text-gray-400 text-sm">
+                      Find your property
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <Image
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/(tabs)/profile")}
+                className="w-10 h-10 bg-white rounded-full items-center justify-center"
+              >
+                <Ionicons
+                  name="notifications-outline"
+                  size={20}
+                  color="#111827"
+                />
+              </TouchableOpacity>
+              {/* <Image
                 source={require("../../../assets/images/favicon.png")}
                 style={{ width: 90, height: 36 }}
                 resizeMode="contain"
-              />
+              /> */}
             </View>
 
             {/* Search Bar */}
-            <TouchableOpacity
-              onPress={() => router.push("/(root)/(tabs)/search")}
-              className="mx-5 mb-6 flex-row items-center bg-white rounded-full px-4 py-3 gap-3"
-              style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 0.5 },
-                shadowOpacity: 0.03,
-                shadowRadius: 3,
-                elevation: 2,
-              }}
-            >
-              <Ionicons name="search-outline" size={18} color="#9CA3AF" />
-              <Text className="text-gray-400 text-sm flex-1">
-                Start your search
-              </Text>
+            <View className="flex-row items-center px-5 pt-4 pb-5 gap-5">
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/(tabs)/search")}
+                className="flex-1 flex-row items-start bg-white rounded-full px-4 py-3 gap-3"
+                style={{
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 0.5 },
+                  shadowOpacity: 0.03,
+                  shadowRadius: 3,
+                  elevation: 2,
+                }}
+              >
+                <Ionicons name="search-outline" size={18} color="#9CA3AF" />
+                <Text className="text-gray-400 text-sm flex-1">
+                  Start your search
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() =>
                   router.push("/(root)/(tabs)/search?openFilters=true")
                 }
-                className="w-8 h-8 bg-[#018a4c] rounded-xl items-center justify-center"
+                className="w-11 h-11 bg-green-500 rounded-full items-center justify-center"
               >
                 <Ionicons name="options-outline" size={15} color="white" />
               </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
             {/* Featured Section */}
             <View className="mb-6">
               <View className="flex-row justify-between items-center mb-3">

@@ -99,7 +99,7 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
   );
 
   return (
-    <SafeAreaView className="bg-gray-50 px-4">
+    <SafeAreaView className="bg-gray-50 px-4 mb-10">
       <View className="flex-row items-center justify-between py-2">
         <TouchableOpacity
           onPress={() => router.back()}
