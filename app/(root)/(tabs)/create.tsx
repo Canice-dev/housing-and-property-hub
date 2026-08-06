@@ -51,9 +51,9 @@ interface FormState {
   state: string;
   mobile_number: string;
   whatsapp_number: string;
-  no_of_bedrooms: number;
-  no_of_bathrooms: number;
-  duration_of_stay: string;
+  // no_of_bedrooms: number;
+  // no_of_bathrooms: number;
+  // duration_of_stay: string;
   latitude: string;
   longitude: string;
   isFeatured: boolean;
@@ -72,9 +72,6 @@ const INITIAL_FORM: FormState = {
   state: "",
   mobile_number: "",
   whatsapp_number: "",
-  no_of_bedrooms: 0,
-  no_of_bathrooms: 0,
-  duration_of_stay: "",
   latitude: "",
   longitude: "",
   isFeatured: false,
@@ -250,9 +247,6 @@ export default function CreateScreen() {
       state: form.state.trim(),
       mobile_number: form.mobile_number.trim(),
       whatsapp_number: form.whatsapp_number.trim(),
-      no_of_bedrooms: form.no_of_bedrooms,
-      no_of_bathrooms: form.no_of_bathrooms,
-      duration_of_stay: form.duration_of_stay.trim(),
       latitude: form.latitude ? Number(form.latitude) : null,
       longitude: form.longitude ? Number(form.longitude) : null,
       images: form.images,
@@ -597,7 +591,7 @@ export default function CreateScreen() {
           </View>
 
           {/* Bedrooms / Bathrooms */}
-          <View className="flex-row gap-4 mb-5">
+          {/* <View className="flex-row gap-4 mb-5">
             <Counter
               label="Bedrooms"
               value={form.no_of_bedrooms}
@@ -608,7 +602,7 @@ export default function CreateScreen() {
               value={form.no_of_bathrooms}
               onChange={(v) => updateForm({ no_of_bathrooms: v })}
             />
-          </View>
+          </View> */}
 
           {/* Coordinates */}
           <View className={sectionClass}>
