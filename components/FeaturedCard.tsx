@@ -73,11 +73,16 @@ export default function FeaturedCard({
           </Text>
         </View>
 
-        <View className="flex-row items-center justify-between">
+        <View className="flex-col">
           <Text className="text-sm font-semibold text-gray-900">
-            {formatPrice(property.initial_price)} {"to pay"}{" "}
-            {formatPrice(property.subsequent_price)}
+            Price: {formatPrice(property.initial_price)}
           </Text>
+          {/* Conditional rendering for subsequent price */}
+          {Number(property?.subsequent_price) > 0 && (
+            <Text className="text-sm font-semibold text-gray-900">
+              To pay: {formatPrice(property.subsequent_price)}
+            </Text>
+          )}
         </View>
       </View>
     </TouchableOpacity>

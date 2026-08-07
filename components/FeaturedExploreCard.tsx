@@ -83,14 +83,13 @@ export default function FeaturedExploreCard({
           </Text>
         </View>
 
-        <View className="flex-row items-center justify-between">
+        <View className="flex-col items-center justify-between">
           <Text className="text-base text-gray-900">
             <Text className="font-semibold underline">
-              {formatPrice(property.initial_price)}
-            </Text>{" "}
-            {"to pay"}{" "}
+              Price: {formatPrice(property.initial_price)}
+            </Text>
             <Text className="font-semibold underline">
-              {formatPrice(property.subsequent_price)}
+              To pay: {formatPrice(property.subsequent_price)}
             </Text>
           </Text>
         </View>

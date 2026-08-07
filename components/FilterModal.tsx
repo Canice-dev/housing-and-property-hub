@@ -23,10 +23,9 @@ const TYPES: { label: string; value: PropertyType }[] = [
 ];
 
 const PRICE_PRESETS = [
-  { label: "Under ₦250K", min: null, max: 250000 },
-  { label: "₦50K – ₦1M", min: 250000, max: 1000000 },
+  { label: "Under ₦100K", min: null, max: 100000 },
+  { label: "₦250K – ₦1M", min: 250000, max: 1000000 },
   { label: "₦1M – ₦2M", min: 1000000, max: 2000000 },
-  { label: "Above ₦2M", min: 2000000, max: null },
 ];
 
 const chip = (active: boolean) =>

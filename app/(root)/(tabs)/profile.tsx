@@ -166,7 +166,9 @@ export default function ProfileScreen() {
             )}
             <Text className="text-base text-gray-700 mt-1">Saved</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/(root)/posts/[id]")}>
+          <TouchableOpacity
+            onPress={() => router.push("/(root)/listings/userListings")}
+          >
             <Text className="text-base text-gray-700 mt-1">My</Text>
             <Text className="text-base text-gray-700">Listings</Text>
           </TouchableOpacity>
@@ -197,7 +199,7 @@ export default function ProfileScreen() {
           />
           <TouchableOpacity
             className="flex-row justify-between items-center w-full h-14 rounded-2xl px-5 bg-gray-50"
-            onPress={() => router.push("/(root)/posts/[id]")}
+            onPress={() => router.push("/(root)/listings/userListings")}
           >
             <View className="flex-row items-center gap-3">
               <Ionicons name="add-circle-outline" size={24} color={"#6b7280"} />

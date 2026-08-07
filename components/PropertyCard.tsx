@@ -38,7 +38,7 @@ export default function PropertyCard({
       {/* Image */}
       <Image
         source={{ uri: property.images[0] }}
-        className="w-28 h-28"
+        className="w-28 h-[116px]"
         resizeMode="cover"
       />
       <View className="flex-1 p-3 justify-between">
@@ -58,10 +58,17 @@ export default function PropertyCard({
         </View>
 
         <View className="flex-row items-center justify-between">
-          <Text className="text-sm font-semibold text-gray-900">
-            {formatPrice(property.initial_price)} {"to pay"}{" "}
-            {formatPrice(property.subsequent_price)}
-          </Text>
+          <View className="flex-col">
+            <Text className="text-sm font-semibold text-gray-900">
+              Price: {formatPrice(property.initial_price)}
+            </Text>
+            {/* Conditional rendering for subsequent price */}
+            {Number(property?.subsequent_price) > 0 && (
+              <Text className="text-sm font-semibold text-gray-900">
+                To pay: {formatPrice(property.subsequent_price)}
+              </Text>
+            )}
+          </View>
           {property.is_sold && (
             <View className="bg-red-50 px-2 py-0.5 rounded-full">
               <Text className="text-red-500 text-xs font-semibold">Sold</Text>

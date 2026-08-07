@@ -3,10 +3,12 @@ import FilterExploreModal from "@/components/FilterExploreModal";
 import { supabase } from "@/lib/supabase";
 import { PropertyType, useFilterStore } from "@/store/filterStore";
 import { Property } from "@/types";
+import { useUser } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
   ScrollView,
@@ -62,7 +64,7 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
 
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-
+  const { user, isLoaded } = useUser();
   const [featured, setFeatured] = useState<Property[]>([]);
   const [recommended, setRecommended] = useState<Property[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -98,6 +100,13 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
     }, []),
   );
 
+  if (!isLoaded || !user) {
+    return (
+      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+        <ActivityIndicator size="large" color="#3B82F6" />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView className="bg-gray-50 px-4 mb-10">
       <View className="flex-row items-center justify-between py-2">
@@ -164,31 +173,30 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      {/* <View>
-        {loading ? (
-          <View className="flex-1 items-center justify-center py-10">
-            <ActivityIndicator size="small" color="#2563EB" />
-          </View>
-        ) : (
-          <FlatList
-            data={featured}
-            keyExtractor={(item) => String(item.id)}
-            renderItem={({ item }) => <FeaturedExploreCard property={item} />}
-            alwaysBounceVertical
-            showsVerticalScrollIndicator={false}
-            contentContainerClassName="pb-6 gap-4"
-            // Displays explicit fallback text if array is empty
-            ListEmptyComponent={
-              <View className="items-center justify-center py-20">
-                <Text className="text-gray-400 text-sm">
-                  No properties found for this category.
-                </Text>
-              </View>
-            }
-          />
-        )}
-      </View> */}
-      <FlatList
+      {loading ? (
+        <View className="flex-1 items-center justify-center py-10">
+          <ActivityIndicator size="small" color="#2563EB" />
+        </View>
+      ) : (
+        <FlatList
+          className="mb-20"
+          data={featured}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => <FeaturedExploreCard property={item} />}
+          alwaysBounceVertical
+          showsVerticalScrollIndicator={false}
+          contentContainerClassName="pb-6 gap-4"
+          // Displays explicit fallback text if array is empty
+          ListEmptyComponent={
+            <View className="items-center justify-center py-20">
+              <Text className="text-gray-400 text-sm">
+                No properties found for this category.
+              </Text>
+            </View>
+          }
+        />
+      )}
+      {/* <FlatList
         className="mb-20"
         data={featured}
         keyExtractor={(item) => String(item.id)}
@@ -206,7 +214,7 @@ export default function SeeAllFeatured({ property }: { property: Property }) {
             </View>
           ) : null
         }
-      />
+      /> */}
 
       {/* Filter Modal */}
       <FilterExploreModal
